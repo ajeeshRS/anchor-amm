@@ -92,7 +92,7 @@ impl<'info> Swap<'info> {
 
         self.deposit_tokens_from_user(is_x, res.deposit)?;
         self.withdraw_tokens_to_user(is_x, res.withdraw)?;
-        
+
         Ok(())
     }
     pub fn deposit_tokens_from_user(&mut self, is_x: bool, amount: u64) -> Result<()> {
@@ -121,8 +121,8 @@ impl<'info> Swap<'info> {
     }
 
     pub fn withdraw_tokens_to_user(&mut self, is_x: bool, amount: u64) -> Result<()> {
-        // If is_x is true (user sold X), they now buy/withdraw Y.
-        // If is_x is false (user sold Y), they now buy/withdraw X.
+        // If is_x is true, they are swaping X with Y
+        // If is_x is false, they are swaping Y with X
         let (from, to) = match is_x {
             true => (
                 self.vault_y.to_account_info(),

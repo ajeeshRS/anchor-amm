@@ -18,15 +18,15 @@ pub struct Withdraw<'info> {
     #[account(
         has_one= mint_x,
         has_one= mint_y,
-        seeds = [b"config",&config.seed.to_le_bytes().as_ref()],
-        bump
+        seeds = [b"config",config.seed.to_le_bytes().as_ref()],
+        bump = config.config_bump
     )]
     pub config: Account<'info, Config>,
 
     #[account(
         mut,
         seeds = [b"lp",config.key().as_ref()],
-        bump
+        bump = config.lp_bump
     )]
     pub lp_token_mint: Account<'info, Mint>,
 
@@ -89,8 +89,8 @@ impl<'info> Withdraw<'info> {
             AmmError::SlippageExceeded
         );
         require!(self.lp_user.amount >= amount, AmmError::InsufficientBalance);
-        self.withdraw_tokens(true, amount)?;
-        self.withdraw_tokens(false, amount)?;
+        self.withdraw_tokens(true, amounts.x)?;
+        self.withdraw_tokens(false, amounts.y)?;
         self.burn_lp_tokens(amount)?;
         Ok(())
     }
@@ -116,7 +116,7 @@ impl<'info> Withdraw<'info> {
 
         let seeds = &[
             &b"config"[..],
-            &self.config.seed.to_be_bytes(),
+            &self.config.seed.to_le_bytes(),
             &[self.config.config_bump],
         ];
 
