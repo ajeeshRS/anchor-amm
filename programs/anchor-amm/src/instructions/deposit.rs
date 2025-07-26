@@ -107,11 +107,11 @@ impl<'info> Deposit<'info> {
     pub fn deposit_tokens(&mut self, is_x: bool, amount: u64) -> Result<()> {
         let (from, to) = match is_x {
             true => (
+                self.user_ata_x.to_account_info(),
                 self.vault_x.to_account_info(),
-                self.vault_y.to_account_info(),
             ),
             false => (
-                self.vault_x.to_account_info(),
+                self.user_ata_y.to_account_info(),
                 self.vault_y.to_account_info(),
             ),
         };
